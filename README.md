@@ -21,3 +21,18 @@ go get github.com/PuerkitoBio/goquery
 ```go
 go get github.com/djimenez/iconv-go
 ```
+
+* sqlite3
+```golang
+go get github.com/mattn/go-sqlite3
+```
+
+* 定时任务 [crontab](https://godoc.org/github.com/robfig/cron)
+```golang
+go get github.com/robfig/cron
+```
+
+* 配置文件[toml](https://github.com/BurntSushi/toml)
+```golang
+go get github.com/BurntSushi/toml
+```
