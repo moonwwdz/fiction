@@ -2,8 +2,9 @@ package db
 
 import (
 	"database/sql"
-	"fiction/util"
 	"time"
+
+	"github.com/moonwwdz/fiction/util"
 
 	_ "github.com/mattn/go-sqlite3"
 )

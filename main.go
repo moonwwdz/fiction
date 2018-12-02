@@ -1,8 +1,10 @@
 package main
 
 import (
-	"fiction/db"
 	"fmt"
+
+	"github.com/moonwwdz/fiction/config"
+	"github.com/moonwwdz/fiction/db"
 )
 
 func main() {
@@ -13,4 +15,7 @@ func main() {
 	s, err := db.GetLasterFive()
 	fmt.Println(s)
 	fmt.Println(err)
+
+	f, _ := config.GetConf()
+	fmt.Printf("%v", f)
 }
