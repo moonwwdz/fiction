@@ -10,14 +10,25 @@ import (
 
 type ConfFile struct {
 	Title string
-	Conf  []conf
+	Conf  []Fconf
+	Type  string //发送消息方式：weixin/telegram
+	Wx    weixin
+	Tg    telegram
 }
 
-type conf struct {
+type Fconf struct {
 	Name      string
 	Url       string
 	TableName string
 	ExecTime  string
+}
+
+type weixin struct {
+}
+
+type telegram struct {
+	Token  string
+	ChatId string
 }
 
 var confName = "conf.toml"
@@ -29,8 +40,8 @@ func init() {
 		return
 	}
 
-	var confs []conf
-	confs = append(confs, conf{
+	var confs []Fconf
+	confs = append(confs, Fconf{
 		Name:      "圣虚",
 		Url:       "/",
 		TableName: "shenxu",

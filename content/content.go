@@ -1,7 +1,7 @@
 package content
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -12,36 +12,41 @@ import (
 	iconv "github.com/djimenez/iconv-go"
 )
 
-type cont struct {
+type Cont struct {
 	Title   string
 	Content string
 	Url     string
 }
 
+var baseUrl = "https://m.biqiuge.com/"
+
 // GetLastTitleList 获取最近更新列表
-func GetLastTitleList(url string, num int) []cont {
-	//url := "https://m.biqiuge.com/"
-	var ret []cont
+func GetLastTitleList(url string, num int) []Cont {
+	var ret []Cont
 	doc, _ := get(url)
 	doc.Find(".books .listpage select option").Each(func(i int, s *goquery.Selection) {
 		values, _ := s.Attr("value")
-		c := cont{Url: values}
+		c := Cont{Url: values}
 		ret = append(ret, c)
 	})
 
 	//取最后一页上的所有章节名
+	if len(ret) < 1 {
+		log.Println("没有取到列表")
+		return ret
+	}
 	lastC := ret[len(ret)-1]
-	titleListDoc, _ := get(url + lastC.Url)
+	titleListDoc, _ := get(baseUrl + lastC.Url)
 	titleLists := getTitleList(titleListDoc)
 
 	//取最后一页的内容太少，再取前一页，防止一次更新太多时，会缺少
 	if len(titleLists) < num {
 		secondC := ret[len(ret)-2]
-		c, _ := get(url + secondC.Url)
+		c, _ := get(baseUrl + secondC.Url)
 		titleLists = append(getTitleList(c))
 	}
 
-	fmt.Printf("%+v\n", titleLists)
+	log.Printf("title-list:%+v\n", titleLists)
 	return ret
 }
 
@@ -58,7 +63,7 @@ func GetCont(u string) string {
 		}
 		cont, err := get(urlTemp)
 		if err != nil {
-			fmt.Print("%v\n", err)
+			log.Print("%v\n", err)
 			return ret
 		}
 		pageReg := regexp.MustCompile(`.*\(.(\d)/(\d).\).*`)
@@ -84,29 +89,33 @@ func get(url string) (*goquery.Document, error) {
 	req.Header.Set("User-Agent", " Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1")
 	res, err := client.Do(req)
 	if err != nil {
+		log.Println("get 请求失败")
+		log.Printf("%v", err)
 		return nil, err
 	}
 	defer res.Body.Close()
 
 	utfBody, err := iconv.NewReader(res.Body, "gbk", "utf-8")
 	if err != nil {
+		log.Println("转编码失败")
 		return nil, err
 	}
 	doc, err := goquery.NewDocumentFromReader(utfBody)
 	if err != nil {
+		log.Println("页面返回数据为空")
 		return nil, err
 	}
 	return doc, nil
 }
 
-func getTitleList(titleListDoc *goquery.Document) []cont {
-	var titleLists []cont
+func getTitleList(titleListDoc *goquery.Document) []Cont {
+	var titleLists []Cont
 	titleListDoc.Find(".books .book_last").Each(func(i int, s *goquery.Selection) {
 		if i == 1 {
 			s.Find("dl dd a").Each(func(ii int, ss *goquery.Selection) {
 				urlStr, eUrlStr := ss.Attr("href")
 				if eUrlStr {
-					t := cont{Url: urlStr, Title: ss.Text()}
+					t := Cont{Url: urlStr, Title: ss.Text()}
 					titleLists = append(titleLists, t)
 				}
 			})
