@@ -43,14 +43,15 @@ func GetLastTitleList(url string, num int) []Cont {
 	if len(titleLists) < num {
 		secondC := ret[len(ret)-2]
 		c, _ := get(baseUrl + secondC.Url)
-		titleLists = append(getTitleList(c))
+		titleLists = append(getTitleList(c), titleLists...)
 	}
 
-	log.Printf("title-list:%+v\n", titleLists)
-	return ret
+	log.Printf("title-list\n:%+v\n", titleLists)
+	return titleLists
 }
 
 func GetCont(u string) string {
+	u = baseUrl + u
 	var ret string
 	urlObj, _ := url.Parse(u)
 	pathArr := strings.Split(urlObj.Path, ".")

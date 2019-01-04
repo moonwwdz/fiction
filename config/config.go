@@ -43,7 +43,7 @@ func init() {
 	var confs []Fconf
 	confs = append(confs, Fconf{
 		Name:      "圣虚",
-		Url:       "/",
+		Url:       "https://m.biqiuge.com/chapters_4772",
 		TableName: "shenxu",
 		ExecTime:  "0 8 * * *",
 	})
