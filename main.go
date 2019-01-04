@@ -14,13 +14,6 @@ import (
 var wg sync.WaitGroup
 
 func main() {
-	//content.GetLastTitleList("https://m.biqiuge.com/book_3773/", 5)
-	//db.SetTable("fuckt")
-	//i, err := db.SaveCont("fuck wangt", "fuck fuck fuck")
-	//s, err := db.GetContByMd5("32bf0e6fcff51e53bd74e70ba1d622b2")
-	//s, err := db.GetLasterFive()
-	//log.Println(s)
-	//log.Println(err)
 
 	confData, err := config.GetConf()
 	if err != nil {
